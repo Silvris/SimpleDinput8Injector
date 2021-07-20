@@ -12,7 +12,7 @@
 #include "DInput8.h"
 #include "MemoryModule.h"
 #include <Unknwn.h>
-std::ofstream out("outLog.txt");
+//std::ofstream out("outLog.txt");
 
 auto LoadDll(const char* path) {
     std::ifstream dll(path, std::ios::binary);
@@ -20,8 +20,8 @@ auto LoadDll(const char* path) {
 
     size_t size = dllRead.size();
     char* allocated = (char*)malloc(size);
-    out << allocated << std::endl;
-    out << size << std::endl;
+    //out << allocated << std::endl;
+    //out << size << std::endl;
     if (allocated&&size) {
         memcpy(allocated, &dllRead[0], size);
         return MemoryLoadLibraryEx(allocated, size, MemoryDefaultAlloc, MemoryDefaultFree, MemoryDefaultLoadLibrary, MemoryDefaultGetProcAddress, MemoryDefaultFreeLibrary, nullptr);
@@ -30,7 +30,7 @@ auto LoadDll(const char* path) {
 }
 
 void Initialize() {
-    out << "Start\n";
+    //out << "Start\n";
     char syspath[MAX_PATH];
     GetSystemDirectoryA(syspath, MAX_PATH);
     strcat_s(syspath, "\\dinput8.dll");
@@ -38,19 +38,19 @@ void Initialize() {
     if (hMod > (HMODULE)31) {
         oDirectInput8Create = (tDirectInput8Create)GetProcAddress(hMod, "DirectInput8Create");
     }
-    out << "DInput8Create\n" << syspath << "\n";
+    //out << "DInput8Create\n" << syspath << "\n";
     //now load any plugins within our folder
     if (std::filesystem::exists("injectPlugins")) {
         for (auto& plugin : std::filesystem::directory_iterator("injectPlugins")) {
             std::string name = plugin.path().filename().string();
             if (plugin.path().filename().extension().string() == ".dll") {
-                out << "Loading " << name << "\n";
+                //out << "Loading " << name << "\n";
                 auto dll = LoadDll(plugin.path().string().c_str());
-                if (!dll) out << "Failed to load " << name << "\n";
+                //if (!dll) out << "Failed to load " << name << "\n";
             }
         }
     }
-    out.close();
+    //out.close();
 }
 
 BOOL APIENTRY DllMain( HMODULE hModule,
